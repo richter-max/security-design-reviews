@@ -17,7 +17,7 @@ graph LR
     Processor --Transform--> Firehose[Kinesis Firehose]
     Firehose --> Snowflake[Snowflake DW]
     
-    subgraph VPC
+    subgraph "VPC Boundary"
         Stream
         Processor
         Firehose

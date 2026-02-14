@@ -9,52 +9,36 @@
 ## 2. Context Diagram (C4 Level 1)
 
 ```mermaid
-C4Context
-    title System Context diagram for Acme SaaS
-
-    Person(customerUser, "Customer User", "HR Employee managing workflows")
-    Person(admin, "Acme Admin", "Internal platform administrator")
-
-    System(acmeSaaS, "Acme SaaS Platform", "Allows customers to manage HR data")
+graph TD
+    %% Context Diagram
+    CustomerUser[Customer User] --Uses--> AcmeSaaS[Acme SaaS Platform]
+    Admin[Acme Admin] --Administers--> AcmeSaaS
     
-    System_Ext(auth0, "Identity Provider", "Handles authentication (Auth0)")
-    System_Ext(emailSystem, "Email Service", "Sends notifications (SendGrid)")
-    System_Ext(s3, "Document Store", "Stores uploaded PDF/Docs")
+    AcmeSaaS --Authenticates via--> Auth0[Identity Provider (Auth0)]
+    AcmeSaaS --Sends emails via--> EmailSystem[Email Service (SendGrid)]
+    AcmeSaaS --Reads/Writes docs--> S3[Document Store (S3)]
 
-    Rel(customerUser, acmeSaaS, "Uses", "HTTPS")
-    Rel(admin, acmeSaaS, "Administers", "HTTPS/VPN")
-    Rel(acmeSaaS, auth0, "Authenticates via", "OIDC")
-    Rel(acmeSaaS, emailSystem, "Sends emails via", "API")
-    Rel(acmeSaaS, s3, "Reads/Writes docs", "S3 API")
+    subgraph "Acme Corp"
+        AcmeSaaS
+        Admin
+    end
 ```
 
 ## 3. Container Diagram (C4 Level 2)
 
 ```mermaid
-C4Container
-    title Container diagram for Acme SaaS
-
-    Person(user, "User", "Web Browser")
-
-    Container_Boundary(c1, "Acme Cluster") {
-        Container(webApp, "Web App", "React/SPA", "Frontend UI")
-        Container(apiGateway, "API Gateway", "Nginx", "Reverse proxy, rate limiting, SSL termination")
-        Container(appSvc, "App Service", "Go", "Core business logic, tenant enforcement")
-        Container(worker, "Async Worker", "Python", "Background jobs, report generation, file processing")
-    }
-
-    ContainerDb(db, "Primary DB", "PostgreSQL", "Stores user data, tenant_id column")
-    ContainerDb(cache, "Cache", "Redis", "Session storage, hot data")
-
-    Rel(user, webApp, "Visits", "HTTPS")
-    Rel(webApp, apiGateway, "API calls", "JSON/HTTPS")
-    Rel(apiGateway, appSvc, "Proxies", "gRPC")
+graph TD
+    %% Container Diagram
+    User[User (Browser)] --HTTPS--> API_GW[API Gateway (Nginx)]
     
-    Rel(appSvc, db, "Reads/Writes", "SQL")
-    Rel(appSvc, cache, "Reads/Writes", "TCP")
-    Rel(appSvc, worker, "Enqueues jobs", "Redis Queue")
+    subgraph "Acme Cluster"
+        API_GW --gRPC--> AppSvc[App Service (Go)]
+        AppSvc --Redis Queue--> Worker[Async Worker (Python)]
+    end
     
-    Rel(worker, s3, "Process uploads", "HTTPS")
+    AppSvc --SQL--> DB[(Primary DB - Postgres)]
+    AppSvc --TCP--> Cache[(Cache - Redis)]
+    Worker --HTTPS--> S3[S3 Bucket]
 ```
 
 ## 4. Trust Boundaries & Data Flow
