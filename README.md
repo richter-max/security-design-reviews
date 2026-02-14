@@ -18,19 +18,22 @@ This project demonstrates a rigorous, engineering-first approach to application 
 2.  **Context is King**: A vulnerability in one context is a feature in another. We analyze threats within the specific business and technical context.
 3.  **Communication is Key**: Security artifacts must be readable by developers, architects, and stakeholders.
 
-## 📂 Repository Structure
+## 📂 Project Portfolio
 
-```
-secure-design-review-lab/
-├── docs/                   # Methodology, standards, and templates
-│   ├── methodology.md      # Our standard approach to security reviews
-│   └── risk-scoring.md     # How we calculate and prioritize risk
-├── reviews/                # The core work - deep dives into specific systems
-│   ├── 01_multi_tenant_saas/
-│   ├── 02_cloud_event_pipeline/
-│   └── 03_ai_agent_platform/
-└── diagrams/               # Architecture and flow diagrams
-```
+### [Review 01: Multi-Tenant B2B SaaS](./reviews/01_multi_tenant_saas/architecture.md)
+**Scenario**: A legacy HR platform moving to the cloud.
+*   **Key Challenge**: Enforcing tenant isolation in a shared-schema database.
+*   **Highlight**: Analysis of "Tenant Hopping" risks and ORM-level mitigations.
+
+### [Review 02: Cloud Event Ingestion](./reviews/02_cloud_event_pipeline/architecture.md)
+**Scenario**: High-scale telemetry pipeline handling 50k events/sec.
+*   **Key Challenge**: Denial of Wallet & Injection attacks in log data.
+*   **Highlight**: Cost-based circuit breakers and immutable storage for audit logs.
+
+### [Review 03: Enterprise AI Agent Platform](./reviews/03_ai_agent_platform/architecture.md)
+**Scenario**: Internal RAG-based agent with tool execution capabilities.
+*   **Key Challenge**: Indirect Prompt Injection and Excessive Agency.
+*   **Highlight**: Human-in-the-Loop design patterns for high-stake actions.
 
 ## 🛠 Methodology Overview
 
